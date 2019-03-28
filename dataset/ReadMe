@@ -1,0 +1,5 @@
+The small userMatrix has a shape of 2000 x 300 
+The first row contains column header
+All following rows has userId , rating1 , ... rating2000
+Ratings are on a scale of 0 to 5
+And null values are filled with 0 
