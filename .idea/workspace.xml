@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="60cfa696-3109-434f-a725-9f492da3dbdf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/kmeans/MapTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kmeans/MapTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/kmeans/ReduceTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kmeans/ReduceTask.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,19 +13,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/kmeans/ReduceTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="11" column="58" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="58" />
+            <state relative-caret-position="390">
+              <caret line="29" column="58" lean-forward="true" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/kmeans/MapTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
+            <state relative-caret-position="-210">
               <caret line="10" column="61" selection-start-line="10" selection-start-column="61" selection-end-line="10" selection-end-column="61" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -65,6 +65,7 @@
       <list>
         <option value="$PROJECT_DIR$/src/main/java/kmeans/KMeans.java" />
         <option value="$PROJECT_DIR$/src/main/java/kmeans/MapTask.java" />
+        <option value="$PROJECT_DIR$/src/main/java/kmeans/ReduceTask.java" />
       </list>
     </option>
   </component>
@@ -128,7 +129,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553844495743" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553846589206" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -155,12 +156,12 @@
       <option name="presentableId" value="Default" />
       <updated>1553804235560</updated>
       <workItem from="1553804238591" duration="114000" />
-      <workItem from="1553822852312" duration="12230000" />
+      <workItem from="1553822852312" duration="14358000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12344000" />
+    <option name="totallyTimeSpent" value="14472000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="992" y="24" width="928" height="1056" extended-state="4" />
@@ -208,13 +209,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/kmeans/ReduceTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="11" column="58" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/kmeans/KMeans.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="615">
@@ -227,11 +221,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/kmeans/MapTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
+        <state relative-caret-position="-210">
           <caret line="10" column="61" selection-start-line="10" selection-start-column="61" selection-end-line="10" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/kmeans/ReduceTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="29" column="58" lean-forward="true" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
         </state>
       </provider>
     </entry>
