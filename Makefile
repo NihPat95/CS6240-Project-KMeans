@@ -2,20 +2,16 @@
 
 # Customize these paths for your environment.
 # -----------------------------------------------------------
-hadoop.root=/home/jatin/tools/hadoop-2.9.1
-jar.name=follower-count-1.0.jar
+hadoop.root=/Users/nihpat95/Documents/hadoop
+jar.name=k-means-1.0.jar
 jar.path=target/${jar.name}
-job.name=fc.FollowerCount
+job.name=kmeans.KMeans
 local.input=input
 local.output=output
-# Pseudo-Cluster Execution
-hdfs.user.name=jatin
-hdfs.input=input
-hdfs.output=output
 # AWS EMR Execution
 aws.emr.release=emr-5.17.0
 aws.region=us-east-1
-aws.bucket.name=jatin-map-reduce-hw1-hadoop
+aws.bucket.name=bucket-name
 aws.subnet.id=subnet-13ee8869
 aws.input=input
 aws.output=output
@@ -30,7 +26,7 @@ jar:
 
 # Removes local output directory.
 clean-local-output:
-	rm -rf ${local.output}*
+	rm -rf ${local.output}* && rm centers
 
 # Runs standalone
 # Make sure Hadoop  is set up (in /etc/hadoop files) for standalone operation (not pseudo-cluster).

@@ -2,31 +2,57 @@ package kmeans;
 
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
-public class ReduceTask extends Reducer <IntWritable, ArrayWritable, IntWritable, Text> {
+public class ReduceTask extends Reducer <IntWritable, DoubleArrayWritable, IntWritable, Text> {
+
+    private static final Logger logger = LogManager.getLogger(ReduceTask.class);
+
+
     @Override
-    protected void reduce(IntWritable key, Iterable<ArrayWritable> values, Context context) throws IOException, InterruptedException {
-        int size = (int)values.spliterator().getExactSizeIfKnown();
-        double[] sum = new double[size];
+    protected void reduce(IntWritable key, Iterable<DoubleArrayWritable> values, Context context)
+            throws IOException, InterruptedException {
+
+        int count = 0;
+        logger.info("In Reducer");
+
+        int k = Integer.parseInt(context.getConfiguration().get("K"));
+        int d = Integer.parseInt(context.getConfiguration().get("D"));
+
+        double[] sum = new double[k];
 
         //For each value in the collection of distances
-        for(ArrayWritable value : values){
-           int i = 0;
+        for(DoubleArrayWritable value : values){
+           count = count + 1;
+
+           double[] ratings = value.getValues();
+
+           if(ratings.length != d){
+               throw new Error(String.format("Dimension does not match %d, %d", ratings.length, d));
+           }
+
            //Addition of each feature distance
-           for(Writable writable : value.get()) {
-               DoubleWritable doubleWritable = (DoubleWritable)writable;
-               sum[i] += doubleWritable.get();
-               i++;
+           for(int i=0; i<d; i++) {
+               sum[i] = sum[i] + ratings[i];
            }
         }
 
         //Calculates the average of all the distances
-        for(int i = 0;i<sum.length;i++){
-            sum[i] = sum[i]/size;
+        for(int i = 0; i<d; i++){
+            sum[i] = sum[i]/count;
         }
 
-        //# TODO : Convert the value into Text and emit it
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<k; i++){
+            sb.append(sum[i]).append(",");
+        }
+
+        sb.deleteCharAt(sb.length()-1);
+        sb.append("\n");
+        context.write(key, new Text(sb.toString()));
     }
 }
