@@ -1,4 +1,4 @@
-.idea
+.idea/
 .DS_store
 dataset/.ipynb_checkpoints/
 dataset/movies_metadata.csv
