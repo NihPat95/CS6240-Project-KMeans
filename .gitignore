@@ -1,0 +1,9 @@
+.idea
+.DS_store
+dataset/.ipynb_checkpoints/
+dataset/movies_metadata.csv
+dataset/rating_matrix
+dataset/ratings.csv
+dataset/userRatings
+k-means.iml
+
