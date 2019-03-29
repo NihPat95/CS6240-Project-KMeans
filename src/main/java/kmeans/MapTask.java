@@ -1,8 +1,6 @@
 package kmeans;
 
-import org.apache.hadoop.io.ArrayWritable;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.BufferedReader;
@@ -49,7 +47,6 @@ public class MapTask extends Mapper<Object, Text, IntWritable, ArrayWritable> {
     protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
         super.map(key, value, context);
         String[] userRatings = value.toString().split(",");
-
         //Getting the user ID and ratings for that user from data
         int userId = Integer.parseInt(userRatings[0]);
         double[] ratings = new double[userRatings.length - 1];
@@ -57,8 +54,9 @@ public class MapTask extends Mapper<Object, Text, IntWritable, ArrayWritable> {
             ratings[i-1] = Double.parseDouble(userRatings[i]);
         }
 
+        DoubleWritable[] values = new DoubleWritable[userRatings.length - 1];
         double min_distance = Double.MAX_VALUE;
-        double min_index = 0;
+        int min_index = 0;
 
         //Calculating distance of point with each cluster centre, i.e, each C value
         for(int i = 0; i<C.length;i++){
@@ -68,10 +66,16 @@ public class MapTask extends Mapper<Object, Text, IntWritable, ArrayWritable> {
                 min_index = i;
             }
         }
-
+        for(int i = 0; i<ratings.length; i++){
+            values[i].set(ratings[i]);
+        }
+        ArrayWritable min_ratings = new ArrayWritable(DoubleWritable.class);
+        min_ratings.set(values);
+        IntWritable map_key = new IntWritable();
+        map_key.set(min_index);
         //Return value of minimum C as key and its user Id as value
         // # TODO : Change it later to satisfy hadoop data types
-        context.write(min_index, userId);
+        context.write(map_key, min_ratings);
 
     }
 
