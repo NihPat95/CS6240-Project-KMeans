@@ -3,7 +3,6 @@ package kmeans;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -30,17 +29,18 @@ public class KMeans extends Configured implements Tool {
         /*
         # TODO loop the join in some iteration or till converge
         # TODO read and redistribute the c points from the previous iteration
+        # TODO run on aws
          */
 
         //k is the number of clusters
         //d is vector dimension, in this case, number of movies
         // # TODO Set values for k and d later
-        int k = 10;
-        int d = 300;
+        int k = 4;
+        int d = 2;
 
         logger.info("Start Job Config");
-        String centersFilePath = writeKpoints(k, d,"centers");
-        logger.info("Centers file path is " + centersFilePath);
+        //String centersFilePath = writeKpoints(k, d,"centers");
+        logger.info("Centers file path is " + "/centers");
 
         final Configuration conf = getConf();
         conf.set("K", String.valueOf(k));
@@ -58,7 +58,7 @@ public class KMeans extends Configured implements Tool {
         job.setReducerClass(ReduceTask.class);
         job.setOutputKeyClass(IntWritable.class);
         job.setOutputValueClass(Text.class);
-        job.addCacheFile(new URI(centersFilePath));
+        job.addCacheFile(new URI("/Users/nihpat95/Documents/CS6240-Project-KMeans/centers"));
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         logger.info("End Job Config");

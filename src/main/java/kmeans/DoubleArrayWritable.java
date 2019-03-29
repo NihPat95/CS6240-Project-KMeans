@@ -12,6 +12,10 @@ public class DoubleArrayWritable implements Writable {
     private double[] values;
     private int length;
 
+    public DoubleArrayWritable(){
+        super();
+    }
+
     public DoubleArrayWritable(double[] values) {
         this.values = values;
         this.length = values.length;

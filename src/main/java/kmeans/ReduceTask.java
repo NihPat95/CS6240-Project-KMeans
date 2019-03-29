@@ -17,12 +17,11 @@ public class ReduceTask extends Reducer <IntWritable, DoubleArrayWritable, IntWr
             throws IOException, InterruptedException {
 
         int count = 0;
-        logger.info("In Reducer");
 
         int k = Integer.parseInt(context.getConfiguration().get("K"));
         int d = Integer.parseInt(context.getConfiguration().get("D"));
 
-        double[] sum = new double[k];
+        double[] sum = new double[d];
 
         //For each value in the collection of distances
         for(DoubleArrayWritable value : values){
@@ -47,7 +46,7 @@ public class ReduceTask extends Reducer <IntWritable, DoubleArrayWritable, IntWr
 
         StringBuilder sb = new StringBuilder();
 
-        for(int i=0; i<k; i++){
+        for(int i=0; i<d; i++){
             sb.append(sum[i]).append(",");
         }
 

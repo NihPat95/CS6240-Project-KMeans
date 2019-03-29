@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
+import java.util.Arrays;
 
 public class MapTask extends Mapper<Object, Text, IntWritable, DoubleArrayWritable> {
 
@@ -27,7 +29,7 @@ public class MapTask extends Mapper<Object, Text, IntWritable, DoubleArrayWritab
         URI[] cacheFiles = context.getCacheFiles();
 
         //Returning Exception if no files are found to read
-        if(cacheFiles == null || cacheFiles.length == 0) {
+        if (cacheFiles == null || cacheFiles.length == 0) {
             throw new RuntimeException("Center points are not in the cache file");
         }
 
@@ -43,55 +45,68 @@ public class MapTask extends Mapper<Object, Text, IntWritable, DoubleArrayWritab
 
         String line;
         String[] ratings;
-
+        int l = 0;
         //Reading the cache file to populate centerPoints points
-        while((line = rdr.readLine()) != null){
+        while((line = rdr.readLine()) != null && l<k){
             ratings = line.split(",");
-            for(int i = 0; i < k; i++){
-                for(int j = 0; j < d; j++){
-                    centerPoints[i][j] = Double.parseDouble(ratings[j]);
-                }
+            for(int j = 0; j < d; j++){
+                centerPoints[l][j] = Double.parseDouble(ratings[j]);
             }
+            l++;
         }
+
+        logger.info("PRint C");
+        for (int i = 0; i < k; i++) {
+            logger.info(Arrays.toString(centerPoints[i]));
+        }
+        logger.info("PRint End");
+
+
     }
 
     @Override
     protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
         String[] userRatings = value.toString().split(",");
         //Getting the user ID and ratings for that user from data
-        int userId = Integer.parseInt(userRatings[0]);
+        double userId = Double.parseDouble(userRatings[0]);
 
-        if(d != userRatings.length-1){
+        if (d != userRatings.length - 1) {
             throw new Error("The number of user feature must be " + d);
         }
 
         double[] ratings = new double[d];
-        for(int i = 1; i<userRatings.length; i++){
-            ratings[i-1] = Double.parseDouble(userRatings[i]);
+        for (int i = 1; i < userRatings.length; i++) {
+            ratings[i - 1] = Double.parseDouble(userRatings[i]);
         }
 
         double minDistance = Double.MAX_VALUE;
-        int minIndex = 0;
+        int minIndex = -1;
 
         //Calculating distance of point with each cluster centre, i.e, each centerPoints value
-        for(int i = 0; i < centerPoints.length; i++){
+        for (int i = 0; i < centerPoints.length; i++) {
+            logger.info(centerPoints.length);
             double euclideanDistance = computeEuclideanDistance(centerPoints[i], ratings);
-            if(euclideanDistance < minDistance){
+
+            logger.info(String.format("%s, %s, %f", Arrays.toString(centerPoints[i]), Arrays.toString(ratings), euclideanDistance));
+
+            if (euclideanDistance < minDistance) {
+                logger.info("new index " + i);
                 minDistance = euclideanDistance;
                 minIndex = i;
             }
         }
+
 
         //Return value of minimum centerPoints as key and its user Id as value
         context.write(new IntWritable(minIndex), new DoubleArrayWritable(ratings));
     }
 
 
-    private double computeEuclideanDistance(double x[], double y[]){
+    private double computeEuclideanDistance(double x[], double y[]) {
         double distance = 0;
 
         //Computes Euclidean Distance of two vectors
-        for(int i = 0; i<x.length; i++){
+        for (int i = 0; i < x.length; i++) {
             distance += Math.pow(x[i] - y[i], 2);
         }
         return Math.sqrt(distance);
