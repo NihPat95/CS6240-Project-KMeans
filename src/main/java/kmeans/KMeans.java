@@ -39,7 +39,7 @@ public class KMeans extends Configured implements Tool {
         int d = 2;
 
         logger.info("Start Job Config");
-        //String centersFilePath = writeKpoints(k, d,"centers");
+//        String centersFilePath = writeKpoints(k, d,"centers");
         logger.info("Centers file path is " + "/centers");
 
         final Configuration conf = getConf();
@@ -58,7 +58,7 @@ public class KMeans extends Configured implements Tool {
         job.setReducerClass(ReduceTask.class);
         job.setOutputKeyClass(IntWritable.class);
         job.setOutputValueClass(Text.class);
-        job.addCacheFile(new URI("/Users/nihpat95/Documents/CS6240-Project-KMeans/centers"));
+        job.addCacheFile(new URI(args[2] + "/centers"));
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         logger.info("End Job Config");
@@ -67,9 +67,9 @@ public class KMeans extends Configured implements Tool {
     }
 
     public static void main(final String[] args) {
-        if (args.length != 2) {
-            throw new Error("Two arguments required:\n" +
-                    "input folder, output folder");
+        if (args.length != 3) {
+            throw new Error("Three arguments required:\n" +
+                    "input folder, output folder, centers path");
         }
 
         try {
@@ -84,21 +84,24 @@ public class KMeans extends Configured implements Tool {
         file.createNewFile();
         BufferedWriter buffer_writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true));
 
+        buffer_writer.write("1,2\n" +
+                "8,6\n" +
+                "4,5");
         //Calculating initial k points randomly and writing them to a file
-        for(int i=0; i < k; i++){
-            StringBuilder sb = new StringBuilder();
-            for( int j = 0; j < d; j++){
-                //generates a random rating from 0.0 to 5.0
-                double random = Math.random() * 5.0;
-                sb.append(random).append(",");
-            }
-
-            sb.deleteCharAt(sb.length()-1);
-            sb.append("\n");
-            buffer_writer.write(sb.toString());
-            logger.info(sb.toString());
-            buffer_writer.flush();
-        }
+//        for(int i=0; i < k; i++){
+//            StringBuilder sb = new StringBuilder();
+//            for( int j = 0; j < d; j++){
+//                //generates a random rating from 0.0 to 5.0
+//                double random = Math.random() * 5.0;
+//                sb.append(random).append(",");
+//            }
+//
+//            sb.deleteCharAt(sb.length()-1);
+//            sb.append("\n");
+//            buffer_writer.write(sb.toString());
+//            logger.info(sb.toString());
+//            buffer_writer.flush();
+//        }
         return file.getAbsolutePath();
     }
 
