@@ -10,6 +10,11 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.List;
 
+/***
+ * Class to denote the center points
+ * Label - id of the center point
+ * Point - the actual features of the point
+ */
 public class Centroid implements WritableComparable<Centroid> {
     private Text label;
     private Point point;
@@ -62,6 +67,13 @@ public class Centroid implements WritableComparable<Centroid> {
         return this.label + "," + this.point.toString();
     }
 
+    /***
+     * Given a string line returns the centroid point parsing the line
+     * example format - id,p1,p2,...,pd
+     * @param line String line containing id <separator> points
+     * @param separator Regex used to split the input line
+     * @return
+     */
     public static Centroid parsePoints(String line, String separator) {
         String[] ids = line.split(separator);
         Text label = new Text(ids[0]);
@@ -74,7 +86,18 @@ public class Centroid implements WritableComparable<Centroid> {
         return new Centroid(label, new Point(points));
     }
 
-    public static Centroid closetPoint(List<Centroid> centroids, Point point) throws Exception {
+    /***
+     * Given a point and set of centroid points
+     * returns the closest centroid point based on the
+     * eucledian distance
+     * @param centroids set of centroid points
+     * @param point point to find the closet distance to centroid
+     * @return
+     * @throws Exception
+     */
+
+    public static Centroid closetPoint(List<Centroid> centroids, Point point)
+            throws Exception {
 
         Centroid result = null;
         double bestSimilarity = Double.MAX_VALUE;

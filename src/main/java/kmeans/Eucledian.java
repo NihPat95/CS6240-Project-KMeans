@@ -2,6 +2,9 @@ package kmeans;
 
 import java.util.Arrays;
 
+/***
+ * Singlenton class to get an instance of Eucledian
+ */
 public class Eucledian {
    private static Eucledian eucledian = null;
    private Eucledian(){}
@@ -10,6 +13,16 @@ public class Eucledian {
        if (eucledian == null) eucledian = new Eucledian();
        return  eucledian;
    }
+
+
+    /***
+     * Returns the similarity between two points
+     * The dimensions of both the points must match
+     * @param p1 Point 1
+     * @param p2 Point 2
+     * @return
+     * @throws Exception
+     */
 
    public double similarity(Point p1, Point p2) throws Exception {
        double x1[] = p1.getVector();

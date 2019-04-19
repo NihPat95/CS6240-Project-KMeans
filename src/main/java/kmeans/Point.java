@@ -9,6 +9,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Arrays;
 
+/***
+ * This class is used to capture the
+ * features of a point as double values
+ */
 public class Point implements Writable {
     private ArrayPrimitiveWritable vector = null;
 
@@ -51,6 +55,12 @@ public class Point implements Writable {
         return sb.toString();
     }
 
+    /***
+     * Given a string line parses the line to create a point object
+     * example - id1,id2,id3,...,idd
+     * @param values Given string line
+     * @param separator Regex used to split the line
+     */
     public void parse(String values, String separator) {
         String[] coords = values.split(separator);
         double[] tmp = new double[coords.length-1];
@@ -60,6 +70,13 @@ public class Point implements Writable {
         vector.set(tmp);
     }
 
+    /***
+     * Add the given point p to the current object point
+     * NOTE - dimensions of the given point must match
+     * the dimension of the current object point
+     * @param p Point to add
+     * @throws Exception
+     */
     public void add(Point p) throws Exception {
         double[] current = getVector();
         double[] toAdd = p.getVector();
@@ -72,6 +89,11 @@ public class Point implements Writable {
 
         this.setVector(current);
     }
+
+    /***
+     * It divides the given point by the counter value
+     * @param counter
+     */
 
     public void divide(int counter) {
         double[] current = getVector();

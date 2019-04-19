@@ -29,6 +29,9 @@ public class KMeansMapper extends Mapper<LongWritable, Text, Centroid, Point> {
             InputStreamReader reader = new InputStreamReader(fs.open(new Path(url)));
             BufferedReader br = new BufferedReader(reader);
             String line = br.readLine();
+
+            // Reads all the center points from the cache file
+            // and add to centroids list
             while (line != null){
                 centroids.add(Centroid.parsePoints(line, ","));
                 line = br.readLine();
@@ -39,7 +42,10 @@ public class KMeansMapper extends Mapper<LongWritable, Text, Centroid, Point> {
     @Override
     protected void map(LongWritable key, Text value, Context context) {
         try {
+            // Parse the point
             point.parse(value.toString(),",");
+
+            // Emit the closet centroid and the given point
             context.write(Centroid.closetPoint(centroids, point), point);
         } catch (Exception e) {
             e.printStackTrace();
