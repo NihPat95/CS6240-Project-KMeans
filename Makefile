@@ -6,8 +6,11 @@ hadoop.root=/Users/nihpat95/Documents/hadoop
 jar.name=k-means-1.0.jar
 jar.path=target/${jar.name}
 job.name=kmeans.KMeans
-local.input=input
+local.input.data=input/small_dataset.csv
+local.input.center=input/centers
 local.output=output
+local.epochs=5
+local.error=10
 # AWS EMR Execution
 aws.emr.release=emr-5.17.0
 aws.region=us-east-1
@@ -26,13 +29,14 @@ jar:
 
 # Removes local output directory.
 clean-local-output:
-	rm -rf ${local.output}* && rm centers
+	rm -rf ${local.output}*
 
 # Runs standalone
 # Make sure Hadoop  is set up (in /etc/hadoop files) for standalone operation (not pseudo-cluster).
 # https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html#Standalone_Operation
 local: jar clean-local-output
-	${hadoop.root}/bin/hadoop jar ${jar.path} ${job.name} ${local.input} ${local.output}
+	${hadoop.root}/bin/hadoop jar ${jar.path} ${job.name} ${local.input.data} \
+	 ${local.input.center} ${local.output} ${local.epochs} ${local.error}
 
 # Start HDFS
 start-hdfs:
