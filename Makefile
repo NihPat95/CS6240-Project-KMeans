@@ -2,17 +2,18 @@
 
 # Customize these paths for your environment.
 # -----------------------------------------------------------
-hadoop.root=/Users/nihpat95/Documents/hadoop
+hadoop.root=/home/jatin/tools/hadoop-2.9.1
 jar.name=k-means-1.0.jar
 jar.path=target/${jar.name}
 job.name=kmeans.KMeans
 local.input=input
 local.output=output
+local.log=log
 # AWS EMR Execution
 aws.emr.release=emr-5.17.0
 aws.region=us-east-1
-aws.bucket.name=bucket-name
-aws.subnet.id=subnet-13ee8869
+aws.bucket.name=cs6240-k-means
+aws.subnet.id=subnet-afa094e5
 aws.input=input
 aws.output=output
 aws.log.dir=log
@@ -26,7 +27,7 @@ jar:
 
 # Removes local output directory.
 clean-local-output:
-	rm -rf ${local.output}* && rm centers
+	rm -rf ${local.output}*
 
 # Runs standalone
 # Make sure Hadoop  is set up (in /etc/hadoop files) for standalone operation (not pseudo-cluster).
@@ -106,11 +107,11 @@ upload-app-aws:
 # Main EMR launch.
 aws: jar upload-app-aws delete-output-aws
 	aws emr create-cluster \
-		--name "FollowerCount MR Cluster" \
+		--name "K-Means 5i Cluster" \
 		--release-label ${aws.emr.release} \
 		--instance-groups '[{"InstanceCount":${aws.num.nodes},"InstanceGroupType":"CORE","InstanceType":"${aws.instance.type}"},{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"${aws.instance.type}"}]' \
 	    --applications Name=Hadoop \
-	    --steps '[{"Args":["${job.name}","s3://${aws.bucket.name}/${aws.input}","s3://${aws.bucket.name}/${aws.output}"],"Type":"CUSTOM_JAR","Jar":"s3://${aws.bucket.name}/${jar.name}","ActionOnFailure":"TERMINATE_CLUSTER","Name":"Custom JAR"}]' \
+	    --steps '[{"Args":["${job.name}","s3://${aws.bucket.name}/${aws.input}","s3://${aws.bucket.name}/${aws.output}", "s3://${aws.bucket.name}"],"Type":"CUSTOM_JAR","Jar":"s3://${aws.bucket.name}/${jar.name}","ActionOnFailure":"TERMINATE_CLUSTER","Name":"Custom JAR"}]' \
 		--log-uri s3://${aws.bucket.name}/${aws.log.dir} \
 		--use-default-roles \
 		--enable-debugging \
@@ -120,6 +121,12 @@ aws: jar upload-app-aws delete-output-aws
 download-output-aws: clean-local-output
 	mkdir ${local.output}
 	aws s3 sync s3://${aws.bucket.name}/${aws.output} ${local.output}
+
+# Download log from S3.
+download-log-aws:
+	rm -rf ${local.log}
+	mkdir ${local.log}
+	aws s3 sync s3://${aws.bucket.name}/${aws.log.dir} ${local.log}
 
 # Change to standalone mode.
 switch-standalone:
