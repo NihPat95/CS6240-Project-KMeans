@@ -70,6 +70,12 @@ public class Point implements Writable {
         vector.set(tmp);
     }
 
+    public static Point parsePoint(String values, String separator){
+        Point p = new Point();
+        p.parse(values, separator);
+        return  p;
+    }
+
     /***
      * Add the given point p to the current object point
      * NOTE - dimensions of the given point must match
@@ -101,4 +107,25 @@ public class Point implements Writable {
             current[i] = current[i] / counter;
         this.setVector(current);
     }
+
+    // Returns the average of the all the points
+    // The dimension of all points must match
+    public static Point getAverage(Iterable<Point> values) throws Exception {
+
+        Point result = null;
+        int counter = 0;
+
+        for (Point p : values) {
+            if (result == null) {
+                result = p;
+            } else {
+                result.add(p);
+            }
+            counter++;
+        }
+
+        result.divide(counter);
+        return result;
+    }
+
 }

@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 
 public class KMeansReducer extends Reducer<Centroid, Point, Text, NullWritable> {
     private Double delta = 0.;
-    private static final String ERROR = "error";
     private static final Logger logger = LogManager.getLogger(KMeansReducer.class);
 
     @Override
@@ -18,7 +17,7 @@ public class KMeansReducer extends Reducer<Centroid, Point, Text, NullWritable> 
         Configuration conf = context.getConfiguration();
 
         //  error for convergence
-        delta = conf.getDouble(ERROR, 0.001);
+        delta = conf.getDouble(Keys.ERROR, 0.001);
     }
 
     @Override
@@ -27,7 +26,7 @@ public class KMeansReducer extends Reducer<Centroid, Point, Text, NullWritable> 
         Point averagePoint = null;
         try {
             // get the average of all the points in one cluster
-            averagePoint = getAverage(values);
+            averagePoint = Point.getAverage(values);
         } catch (Exception e) {
             logger.info("Error");
         }
@@ -48,26 +47,5 @@ public class KMeansReducer extends Reducer<Centroid, Point, Text, NullWritable> 
             e.printStackTrace();
         }
     }
-
-    // Returns the average of the all the points
-    // The dimension of all points must match
-    private Point getAverage(Iterable<Point> values) throws Exception {
-
-        Point result = null;
-        int counter = 0;
-
-        for (Point p : values) {
-            if (result == null) {
-                result = p;
-            } else {
-                result.add(p);
-            }
-            counter++;
-        }
-
-        result.divide(counter);
-        return result;
-    }
-
 
 }

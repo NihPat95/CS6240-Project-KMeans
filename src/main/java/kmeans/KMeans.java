@@ -1,5 +1,6 @@
 package kmeans;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -13,24 +14,13 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.hadoop.conf.Configuration;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 
 public class KMeans extends Configured implements Tool {
 
     private static final Logger logger = LogManager.getLogger(KMeans.class);
-
-    private static final String INPUT_DATA_PATH = "inputDataPath";
-    private static final String INPUT_CLUSTER_PATH = "inputClusterPath";
-    private static final String OUTPUT_PATH = "outputPath";
-    private static final String MAX_ITERATION = "maxEpochs";
-    private static final String ITERATION = "iteration";
-    private static final String ERROR = "error";
-    private static final String STOP = "stop";
-    private static final String SEP = System.getProperty("file.separator");
 
     @Override
     public int run(String[] args) throws Exception {
@@ -44,13 +34,11 @@ public class KMeans extends Configured implements Tool {
             # argument 4 - max error between two iterations
         */
 
-        System.out.println(Arrays.toString(args));
-
-        conf.set(INPUT_DATA_PATH, args[0]);
-        conf.set(INPUT_CLUSTER_PATH, args[1]);
-        conf.set(OUTPUT_PATH, args[2]);
-        conf.setInt(MAX_ITERATION, Integer.valueOf(args[3]));
-        conf.setDouble(ERROR, Double.parseDouble(args[4]));
+        conf.set(Keys.INPUT_DATA_PATH, args[0]);
+        conf.set(Keys.INPUT_CLUSTER_PATH, args[1]);
+        conf.set(Keys.OUTPUT_PATH, args[2]);
+        conf.setInt(Keys.MAX_ITERATION, Integer.valueOf(args[3]));
+        conf.setDouble(Keys.ERROR, Double.parseDouble(args[4]));
 
         int maxIterations = Integer.parseInt(args[3]);
         int currentIteration = 0;
@@ -58,7 +46,7 @@ public class KMeans extends Configured implements Tool {
         while(currentIteration != maxIterations){
 
             System.out.println("Running iteration " + currentIteration);
-            conf.setInt(ITERATION, currentIteration);
+            conf.setInt(Keys.ITERATION, currentIteration);
             Job job = Job.getInstance(conf, "Kmeans");
             execute(conf, job);
             if(job.getCounters().findCounter(Counter.STOPCOUNTER).getValue() == 1) {
@@ -89,7 +77,7 @@ public class KMeans extends Configured implements Tool {
         addCacheFiles(conf, job);
 
         FileOutputFormat.setOutputPath(job, new Path(getOutputPath(conf)));
-        FileInputFormat.addInputPath(job, new Path(conf.get(INPUT_DATA_PATH)));
+        FileInputFormat.addInputPath(job, new Path(conf.get(Keys.INPUT_DATA_PATH)));
 
         job.setMapperClass(KMeansMapper.class);
         job.setReducerClass(KMeansReducer.class);
@@ -102,11 +90,11 @@ public class KMeans extends Configured implements Tool {
     }
 
     private void addCacheFiles(Configuration conf, Job job) throws IOException {
-        int iteration = conf.getInt(ITERATION, 0);
+        int iteration = conf.getInt(Keys.ITERATION, 0);
 
         if (iteration > 1) {
 
-            String output = conf.get(OUTPUT_PATH) + SEP + (iteration-1);
+            String output = conf.get(Keys.OUTPUT_PATH) + Keys.SEP + (iteration-1);
 
             Path out = new Path(output, "part-r-[0-9]*");
 
@@ -119,14 +107,15 @@ public class KMeans extends Configured implements Tool {
             }
         }
         else {
-            Path path = new Path(conf.get(INPUT_CLUSTER_PATH));
+            Path path = new Path(conf.get(Keys.INPUT_CLUSTER_PATH));
             logger.info("First iteration adding " + path.toUri().toString());
             job.addCacheFile(path.toUri());
         }
     }
 
     private String getOutputPath(Configuration conf){
-        return conf.get(OUTPUT_PATH) + SEP + (conf.getInt(ITERATION, 0));
+        return conf.get(Keys.OUTPUT_PATH) + Keys.SEP +
+                (conf.getInt(Keys.ITERATION, 0));
     }
 
     private void deleteOutputDirectory(Configuration conf) {

@@ -6,8 +6,10 @@ hadoop.root=/Users/nihpat95/Documents/hadoop
 jar.name=k-means-1.0.jar
 jar.path=target/${jar.name}
 job.name=kmeans.KMeans
+job.name2=kmeans.ParallelKMeans
 local.input.data=input/small_dataset.csv
 local.input.center=input/centers
+local.input.kvalues=kvalues
 local.output=output
 local.epochs=5
 local.error=10
@@ -37,6 +39,11 @@ clean-local-output:
 local: jar clean-local-output
 	${hadoop.root}/bin/hadoop jar ${jar.path} ${job.name} ${local.input.data} \
 	 ${local.input.center} ${local.output} ${local.epochs} ${local.error}
+
+local2: jar clean-local-output
+	${hadoop.root}/bin/hadoop jar ${jar.path} ${job.name2} ${local.input.data} \
+	 ${local.input.kvalues} ${local.output} ${local.epochs} ${local.error}
+
 
 # Start HDFS
 start-hdfs:
