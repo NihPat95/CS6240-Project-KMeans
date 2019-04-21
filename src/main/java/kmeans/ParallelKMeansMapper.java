@@ -9,6 +9,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -33,11 +34,14 @@ public class ParallelKMeansMapper extends Mapper<LongWritable, Text, Text, Text>
                 .getDouble(Keys.ERROR, 0.01);
 
         URI[] urls = context.getCacheFiles();
+        //Returning Exception if no files are found to read
+        if(urls == null && urls.length == 0){
+            System.out.println("Cache files has nothing");
+        }
         for (URI url: urls){
 
-            FileSystem fs = FileSystem.get(context.getConfiguration());
-            InputStreamReader reader = new InputStreamReader(fs.open(new Path(url)));
-            BufferedReader br = new BufferedReader(reader);
+            String[] url_split = url.toString().split("/");
+            BufferedReader br = new BufferedReader(new FileReader(url_split[url_split.length - 1]));
             String line = br.readLine();
 
             // Read all data points into the Points list

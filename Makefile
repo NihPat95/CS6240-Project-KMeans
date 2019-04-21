@@ -1,5 +1,4 @@
-# Makefile for Hadoop MapReduce WordCount demo project.
-
+# MakeFile for K-means project
 # Customize these paths for your environment.
 # -----------------------------------------------------------
 hadoop.root=/home/jatin/tools/hadoop-2.9.1
@@ -16,7 +15,7 @@ local.error="10"
 
 # AWS EMR Execution
 
-aws.input.data=input/small_dataset.csv
+aws.input.data=input/rating_matrix
 aws.input.center=input/centers
 aws.input.kvalues=kvalues
 aws.output=output
@@ -30,6 +29,7 @@ aws.input=input
 aws.output=output
 aws.log.dir=log
 aws.num.nodes=5
+
 aws.instance.type=m4.large
 # -----------------------------------------------------------
 
@@ -125,7 +125,7 @@ upload-app-aws:
 # Main EMR launch for approach 1
 aws: jar upload-app-aws delete-output-aws
 	aws emr create-cluster \
-		--name "K-Means approach 1" \
+		--name "K-Means approach 1 5i" \
 		--release-label ${aws.emr.release} \
 		--instance-groups '[{"InstanceCount":${aws.num.nodes},"InstanceGroupType":"CORE","InstanceType":"${aws.instance.type}"},{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"${aws.instance.type}"}]' \
 	    --applications Name=Hadoop \
@@ -138,7 +138,7 @@ aws: jar upload-app-aws delete-output-aws
 # Main EMR launch for approach 2
 aws2: jar upload-app-aws delete-output-aws
 	aws emr create-cluster \
-		--name "K-Means approach 2" \
+		--name "K-Means approach 2 5i" \
 		--release-label ${aws.emr.release} \
 		--instance-groups '[{"InstanceCount":${aws.num.nodes},"InstanceGroupType":"CORE","InstanceType":"${aws.instance.type}"},{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"${aws.instance.type}"}]' \
 	    --applications Name=Hadoop \
