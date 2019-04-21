@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileUtility {
+public class make S3Utility {
 
     private static final String S3_FILE_PREFIX = "s3://";
     public static List<String> getListOfFilesInDir(String bucket, String dir, boolean isStorageS3) throws IOException {

@@ -23,6 +23,7 @@ public class KMeansMapper extends Mapper<LongWritable, Text, Centroid, Point> {
         centroids = new ArrayList<>();
 
         URI[] urls = context.getCacheFiles();
+
         //Returning Exception if no files are found to read
         if(urls == null && urls.length == 0){
             System.out.println("Cache files has nothing");
@@ -40,21 +41,6 @@ public class KMeansMapper extends Mapper<LongWritable, Text, Centroid, Point> {
             }
         }
 
-
-//        for (URI url: urls){
-//
-//            FileSystem fs = FileSystem.get(context.getConfiguration());
-//            InputStreamReader reader = new InputStreamReader(fs.open(new Path(url)));
-//            BufferedReader br = new BufferedReader(new FileReader(reader));
-//            String line = br.readLine();
-//
-//            // Reads all the center points from the cache file
-//            // and add to centroids list
-//            while (line != null){
-//                centroids.add(Centroid.parsePoints(line, ","));
-//                line = br.readLine();
-//            }
-//        }
     }
 
     @Override

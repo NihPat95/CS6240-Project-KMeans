@@ -12,10 +12,11 @@ local.input.kvalues=kvalues
 local.output=output
 local.epochs="5"
 local.error="10"
+local.log.dir=log
 
 # AWS EMR Execution
 
-aws.input.data=input/rating_matrix
+aws.input.data=input/small_dataset.csv
 aws.input.center=input/centers
 aws.input.kvalues=kvalues
 aws.output=output
@@ -28,7 +29,7 @@ aws.subnet.id=subnet-a25236c5
 aws.input=input
 aws.output=output
 aws.log.dir=log
-aws.num.nodes=5
+aws.num.nodes=3
 
 aws.instance.type=m4.large
 # -----------------------------------------------------------
@@ -138,7 +139,7 @@ aws: jar upload-app-aws delete-output-aws
 # Main EMR launch for approach 2
 aws2: jar upload-app-aws delete-output-aws
 	aws emr create-cluster \
-		--name "K-Means approach 2 5i" \
+		--name "K-Means approach 2 3i" \
 		--release-label ${aws.emr.release} \
 		--instance-groups '[{"InstanceCount":${aws.num.nodes},"InstanceGroupType":"CORE","InstanceType":"${aws.instance.type}"},{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"${aws.instance.type}"}]' \
 	    --applications Name=Hadoop \
@@ -152,6 +153,12 @@ aws2: jar upload-app-aws delete-output-aws
 download-output-aws: clean-local-output
 	mkdir ${local.output}
 	aws s3 sync s3://${aws.bucket.name}/${aws.output} ${local.output}
+
+# Download log from S3.
+download-log-aws:
+	rm -rf ${local.log.dir}
+	mkdir ${local.log.dir}
+	aws s3 sync s3://${aws.bucket.name}/${aws.log.dir} ${local.log.dir}
 
 # Change to standalone mode.
 switch-standalone:

@@ -96,7 +96,7 @@ public class KMeans extends Configured implements Tool {
         System.out.println(iteration);
         if (iteration > 1) {
             String dir_name = "output/" + Integer.toString(iteration - 1);
-            List<String> files = FileUtility.getListOfFilesInDir(BUCKET_NAME, dir_name, true);
+            List<String> files = S3Utility.getListOfFilesInDir(BUCKET_NAME, dir_name, true);
             System.out.println("Calling the above function");
             for(String file : files){
                 Path path = new Path(file);
@@ -104,32 +104,6 @@ public class KMeans extends Configured implements Tool {
                 System.out.print("printing file ");
                 System.out.println(file);
             }
-//            System.out.println("Reaching here");
-//            String output = conf.get(Keys.OUTPUT_PATH) + Keys.SEP + (iteration-1);
-//            System.out.println("Printing output string");
-//            System.out.println(output);
-//            Path out = new Path(output, "part-r-[0-9]*");
-//
-//            System.out.println("printing path");
-//            System.out.println(out.toString());
-//
-//            FileSystem fs = FileSystem.get(conf);
-//            System.out.println("What is up1");
-//            System.out.println(fs.toString());
-//            FileStatus[] ls = fs.globStatus(out);
-//            System.out.println("What is up2");
-//            System.out.println("printing ls length");
-//            System.out.println(ls.length);
-//
-//            for (FileStatus fileStatus : ls) {
-//                System.out.println("JOR SE BOLO JMTD");
-//                System.out.println(fileStatus);
-//                Path pfs = fileStatus.getPath();
-//                logger.info("Adding " + pfs.toUri().toString());
-//                System.out.println("JOR SE BOLO HAR HAR GANGE");
-//                System.out.println(pfs.toUri());
-//                job.addCacheFile(pfs.toUri());
-//            }
         }
         else {
             Path path = new Path(conf.get(Keys.INPUT_CLUSTER_PATH));
@@ -143,20 +117,7 @@ public class KMeans extends Configured implements Tool {
                 (conf.getInt(Keys.ITERATION, 0));
     }
 
-//    private void deleteOutputDirectory(Configuration conf) {
-//        Path output = new Path(getOutputPath(conf));
-//        try {
-//            FileSystem dfs = FileSystem.get(conf);
-//            if (dfs.isDirectory(output)) {
-//                dfs.delete(output, true);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void run(Job job, Configuration conf) {
-//        deleteOutputDirectory(conf);
 
         try {
             job.waitForCompletion(true);

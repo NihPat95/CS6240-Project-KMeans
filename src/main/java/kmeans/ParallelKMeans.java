@@ -34,8 +34,9 @@ public class ParallelKMeans extends Configured implements Tool {
         conf.setInt(Keys.MAX_ITERATION, Integer.valueOf(args[3]));
         conf.setDouble(Keys.ERROR, Double.parseDouble(args[4]));
 
-        final Job job = Job.getInstance(conf, "Kmeans");
+        final Job job = Job.getInstance(conf, "ParallelKmeans");
 
+        job.setJarByClass(getClass());
         job.addCacheFile(new Path(args[0]).toUri());
         FileInputFormat.addInputPath(job, new Path(args[1]));
         FileOutputFormat.setOutputPath(job, new Path(args[2]));
