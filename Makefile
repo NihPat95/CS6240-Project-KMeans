@@ -2,7 +2,7 @@
 
 # Customize these paths for your environment.
 # -----------------------------------------------------------
-hadoop.root=/Users/nihpat95/Documents/hadoop
+hadoop.root=/home/jatin/tools/hadoop-2.9.1
 jar.name=k-means-1.0.jar
 jar.path=target/${jar.name}
 job.name=kmeans.KMeans
@@ -11,13 +11,21 @@ local.input.data=input/small_dataset.csv
 local.input.center=input/centers
 local.input.kvalues=kvalues
 local.output=output
-local.epochs=5
-local.error=10
+local.epochs="5"
+local.error="10"
+
 # AWS EMR Execution
+
+aws.input.data=input/small_dataset.csv
+aws.input.center=input/centers
+aws.input.kvalues=kvalues
+aws.output=output
+aws.epochs="5"
+aws.error="10"
 aws.emr.release=emr-5.17.0
 aws.region=us-east-1
-aws.bucket.name=bucket-name
-aws.subnet.id=subnet-13ee8869
+aws.bucket.name=cs6240-k-means
+aws.subnet.id=subnet-a25236c5
 aws.input=input
 aws.output=output
 aws.log.dir=log
@@ -114,14 +122,27 @@ delete-output-aws:
 upload-app-aws:
 	aws s3 cp ${jar.path} s3://${aws.bucket.name}
 
-# Main EMR launch.
+# Main EMR launch for approach 1
 aws: jar upload-app-aws delete-output-aws
 	aws emr create-cluster \
-		--name "FollowerCount MR Cluster" \
+		--name "K-Means approach 1" \
 		--release-label ${aws.emr.release} \
 		--instance-groups '[{"InstanceCount":${aws.num.nodes},"InstanceGroupType":"CORE","InstanceType":"${aws.instance.type}"},{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"${aws.instance.type}"}]' \
 	    --applications Name=Hadoop \
-	    --steps '[{"Args":["${job.name}","s3://${aws.bucket.name}/${aws.input}","s3://${aws.bucket.name}/${aws.output}"],"Type":"CUSTOM_JAR","Jar":"s3://${aws.bucket.name}/${jar.name}","ActionOnFailure":"TERMINATE_CLUSTER","Name":"Custom JAR"}]' \
+	    --steps '[{"Args":["${job.name}","s3://${aws.bucket.name}/${aws.input.data}","s3://${aws.bucket.name}/${aws.input.center}","s3://${aws.bucket.name}/${aws.output}", ${aws.epochs}, ${aws.error}],"Type":"CUSTOM_JAR","Jar":"s3://${aws.bucket.name}/${jar.name}","ActionOnFailure":"TERMINATE_CLUSTER","Name":"Custom JAR"}]' \
+		--log-uri s3://${aws.bucket.name}/${aws.log.dir} \
+		--use-default-roles \
+		--enable-debugging \
+		--auto-terminate
+
+# Main EMR launch for approach 2
+aws2: jar upload-app-aws delete-output-aws
+	aws emr create-cluster \
+		--name "K-Means approach 2" \
+		--release-label ${aws.emr.release} \
+		--instance-groups '[{"InstanceCount":${aws.num.nodes},"InstanceGroupType":"CORE","InstanceType":"${aws.instance.type}"},{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"${aws.instance.type}"}]' \
+	    --applications Name=Hadoop \
+	    --steps '[{"Args":["${job.name2}","s3://${aws.bucket.name}/${aws.input.data}","s3://${aws.bucket.name}/${aws.input.kvalues}","s3://${aws.bucket.name}/${aws.output}", ${aws.epochs}, ${aws.error}],"Type":"CUSTOM_JAR","Jar":"s3://${aws.bucket.name}/${jar.name}","ActionOnFailure":"TERMINATE_CLUSTER","Name":"Custom JAR"}]' \
 		--log-uri s3://${aws.bucket.name}/${aws.log.dir} \
 		--use-default-roles \
 		--enable-debugging \

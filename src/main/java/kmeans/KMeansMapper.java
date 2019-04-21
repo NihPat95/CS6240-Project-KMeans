@@ -5,7 +5,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-
+import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,11 +23,13 @@ public class KMeansMapper extends Mapper<LongWritable, Text, Centroid, Point> {
         centroids = new ArrayList<>();
 
         URI[] urls = context.getCacheFiles();
-        for (URI url: urls){
-
-            FileSystem fs = FileSystem.get(context.getConfiguration());
-            InputStreamReader reader = new InputStreamReader(fs.open(new Path(url)));
-            BufferedReader br = new BufferedReader(reader);
+        //Returning Exception if no files are found to read
+        if(urls == null && urls.length == 0){
+            System.out.println("Cache files has nothing");
+        }
+        for (URI url : urls){
+            String[] url_split = url.toString().split("/");
+            BufferedReader br = new BufferedReader(new FileReader(url_split[url_split.length - 1]));
             String line = br.readLine();
 
             // Reads all the center points from the cache file
@@ -37,6 +39,22 @@ public class KMeansMapper extends Mapper<LongWritable, Text, Centroid, Point> {
                 line = br.readLine();
             }
         }
+
+
+//        for (URI url: urls){
+//
+//            FileSystem fs = FileSystem.get(context.getConfiguration());
+//            InputStreamReader reader = new InputStreamReader(fs.open(new Path(url)));
+//            BufferedReader br = new BufferedReader(new FileReader(reader));
+//            String line = br.readLine();
+//
+//            // Reads all the center points from the cache file
+//            // and add to centroids list
+//            while (line != null){
+//                centroids.add(Centroid.parsePoints(line, ","));
+//                line = br.readLine();
+//            }
+//        }
     }
 
     @Override
